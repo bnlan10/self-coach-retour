@@ -27,7 +27,10 @@
   var retour = /[?&](code|error)=/.test(q) && /[?&]state=/.test(q);
   var tel = /[?&]state=tel\./.test(q);
   if (retour && tel) {
-    var app = 'intent://withings' + q + '#Intent;scheme=com.ben.selfcoach;package=com.ben.selfcoach;end';
+    // Page ouverte dans l'app (affichage intégré d'Android, « ; wv) ») : retour sur l'adresse de l'app.
+    // Ouverte dans le navigateur : retour dans l'app par son lien.
+    var dansApp = /; wv\)/.test(navigator.userAgent);
+    var app = dansApp ? 'https://localhost/' + q : 'intent://withings' + q + '#Intent;scheme=com.ben.selfcoach;package=com.ben.selfcoach;end';
     document.getElementById('tel-lien').href = app;
     document.getElementById('tel').hidden = false;
     location.replace(app);
