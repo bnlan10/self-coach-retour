@@ -17,12 +17,21 @@
 <main>
   <p>Retour vers Self Coach…</p>
   <p id="lien" hidden><a href="http://localhost:5173/">Ouvrir Self Coach</a> (l'app doit tourner sur ce Mac).</p>
+  <p id="tel" hidden><a id="tel-lien" href="#">Revenir dans l'app Self Coach</a></p>
 </main>
 <script>
   // Relais de connexion : Withings exige une adresse https publique. Cette page renvoie aussitôt le code
   // d'autorisation (inutile sans la clé secrète, gardée dans l'app) vers l'app locale. Rien n'est enregistré ici.
+  // Téléphone (état « tel. … ») : retour dans l'app Android par son lien ; sinon vers l'app du Mac.
   var q = location.search;
-  if (/[?&](code|error)=/.test(q) && /[?&]state=/.test(q)) location.replace('http://localhost:5173/' + q);
+  var retour = /[?&](code|error)=/.test(q) && /[?&]state=/.test(q);
+  var tel = /[?&]state=tel\./.test(q);
+  if (retour && tel) {
+    var app = 'intent://withings' + q + '#Intent;scheme=com.ben.selfcoach;package=com.ben.selfcoach;end';
+    document.getElementById('tel-lien').href = app;
+    document.getElementById('tel').hidden = false;
+    location.replace(app);
+  } else if (retour) location.replace('http://localhost:5173/' + q);
   else document.getElementById('lien').hidden = false;
 </script>
 </body>
